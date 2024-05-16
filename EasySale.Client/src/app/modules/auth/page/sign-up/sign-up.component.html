@@ -1,0 +1,51 @@
+<main class="min-h-screen w-full flex justify-center items-center">
+    <p-card class="w-full max-w-md" header="Sign up for free">
+        <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()" class="w-full">
+            <div class="space-y-2.5">
+
+                <div class="flex flex-col gap-1">
+                    <label for="username">Username</label>
+                    <input id="username" class="w-full" type="text" pInputText formControlName="username" />
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label for="email">Email</label>
+                    <input id="email" class="w-full" type="text" pInputText formControlName="email" />
+                </div>
+
+                <div class="flex flex-col gap-1 w-full">
+                    <label for="password">Password</label>
+                    <p-password id="password" formControlName="password" class="w-full" inputStyleClass="w-full"
+                        styleClass="w-full p-password p-component p-inputwrapper p-input-icon-right"
+                        [toggleMask]="true">
+                        <ng-template pTemplate="header">
+                            <h6>Pick a password</h6>
+                        </ng-template>
+                        <ng-template pTemplate="footer">
+                            <p-divider />
+                            <p class="mt-2">Suggestions</p>
+                            <ul class="pl-2 ml-2 mt-0 list-disc" style="line-height: 1.5">
+                                <li>At least one lowercase</li>
+                                <li>At least one uppercase</li>
+                                <li>At least one numeric</li>
+                                <li>Minimum 8 characters</li>
+                            </ul>
+                        </ng-template>
+                    </p-password>
+                </div>
+
+                <div class="flex flex-col gap-1 w-full">
+                    <label for="confirm-password">Confirm Password</label>
+                    <p-password id="confirm-password" formControlName="confirmPassword" inputStyleClass="w-full"
+                        styleClass="w-full p-password p-component p-inputwrapper p-input-icon-right" [feedback]="false"
+                        [toggleMask]="true" />
+                </div>
+            </div>
+            <div class="mt-6">
+                <p-button [disabled]="!signUpForm.valid" type="submit" label="Create account" class="w-full"
+                    styleClass="w-full" />
+            </div>
+        </form>
+
+    </p-card>
+</main>
