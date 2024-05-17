@@ -18,6 +18,10 @@ import { validateConfirmPassword } from '../../../../shared/validators/validate-
 import { CommonModule } from '@angular/common';
 import { InputErrorMessageComponent } from '../../../../shared/components/input-error-message/input-error-message.component';
 import { RouterLink } from '@angular/router';
+import {
+  MAX_USERNAME_LENGTH,
+  MIN_USERNAME_LENGTH,
+} from '../../../../shared/validators/contstants';
 
 interface SignUpForm {
   username: FormControl<string>;
@@ -51,8 +55,8 @@ export class SignUpComponent {
       username: new FormControl('', {
         validators: [
           Validators.required,
-          Validators.minLength(4),
-          Validators.maxLength(30),
+          Validators.minLength(MIN_USERNAME_LENGTH),
+          Validators.maxLength(MAX_USERNAME_LENGTH),
         ],
         nonNullable: true,
       }),
