@@ -1,13 +1,16 @@
-<main class="min-h-screen w-full flex justify-center items-center">
+<main class="min-h-screen w-full flex flex-col gap-4 justify-center items-center py-8">
     <p-card class="w-full max-w-md" header="Sign up for free">
         <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()" class="w-full">
             <div class="space-y-2.5">
 
-                <div class="flex flex-col gap-1">
+                <div class="flex flex-col gap-1 ">
                     <label for="username">Username</label>
-                    <input
-                        [ngClass]="!signUpForm.controls.username.valid && signUpForm.controls.username.touched?'ng-invalid ng-dirty':''"
-                        id="username" class="w-full" type="text" pInputText formControlName="username" />
+                    <p-iconField iconPosition="left">
+                        <p-inputIcon styleClass="pi pi-user" />
+                        <input placeholder="Username"
+                            [ngClass]="!signUpForm.controls.username.valid && signUpForm.controls.username.touched?'ng-invalid ng-dirty':''"
+                            id="username" class="w-full" type="text" pInputText formControlName="username" />
+                    </p-iconField>
                     @if(!signUpForm.controls.username.valid && signUpForm.controls.username.touched){
                     <div>
                         @if (signUpForm.controls.username.getError("required")) {
@@ -25,9 +28,12 @@
 
                 <div class="flex flex-col gap-1">
                     <label for="email">Email</label>
-                    <input
-                        [ngClass]="!signUpForm.controls.email.valid && signUpForm.controls.email.touched?'ng-invalid ng-dirty':''"
-                        id="email" class="w-full" type="text" pInputText formControlName="email" />
+                    <p-iconField iconPosition="left">
+                        <p-inputIcon styleClass="pi pi-envelope" />
+                        <input placeholder="Email"
+                            [ngClass]="!signUpForm.controls.email.valid && signUpForm.controls.email.touched?'ng-invalid ng-dirty':''"
+                            id="email" class="w-full" type="text" pInputText formControlName="email" />
+                    </p-iconField>
 
                     @if(!signUpForm.controls.email.valid && signUpForm.controls.email.touched){
                     <div>
@@ -44,7 +50,7 @@
 
                 <div class="flex flex-col gap-1 w-full">
                     <label for="password">Password</label>
-                    <p-password
+                    <p-password placeholder="Password"
                         [ngClass]="!signUpForm.controls.password.valid && signUpForm.controls.password.touched?'ng-invalid ng-dirty':''"
                         id="password" formControlName="password" class="w-full" inputStyleClass="w-full"
                         styleClass="w-full p-password p-component p-inputwrapper p-input-icon-right"
@@ -78,7 +84,7 @@
 
                 <div class="flex flex-col gap-1 w-full">
                     <label for="confirm-password">Confirm Password</label>
-                    <p-password [ngClass]="{
+                    <p-password placeholder="Confirm password" [ngClass]="{
                         'ng-invalid ng-dirty': 
                           (signUpForm.controls.confirmPassword.touched && !signUpForm.controls.confirmPassword.valid) || 
                           (signUpForm.controls.confirmPassword.touched &&signUpForm.errors &&  signUpForm.errors['notMatched'])
@@ -106,6 +112,16 @@
                     styleClass="w-full" />
             </div>
         </form>
-
+        <ng-template pTemplate="footer">
+            <div class="flex  justify-center items-center">
+                <p class="text-xs text-gray-300">By signing up you agree to our <span class="font-semibold">Terms of
+                        Service.</span>
+                </p>
+            </div>
+        </ng-template>
     </p-card>
+    <div class="flex gap-1 justify-center items-center">
+        <p>Already have an account?</p>
+        <p-button [style]="{padding: '0px'}" routerLink="/sign-in" label="Sign in" [link]="true" />
+    </div>
 </main>

@@ -5,6 +5,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { PasswordModule } from 'primeng/password';
 import { DividerModule } from 'primeng/divider';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 import {
   FormControl,
   FormGroup,
@@ -15,6 +17,7 @@ import { validatePassword } from '../../../../shared/validators/validate-passwor
 import { validateConfirmPassword } from '../../../../shared/validators/validate-confirm-password.validator';
 import { CommonModule } from '@angular/common';
 import { InputErrorMessageComponent } from '../../../../shared/components/input-error-message/input-error-message.component';
+import { RouterLink } from '@angular/router';
 
 interface SignUpForm {
   username: FormControl<string>;
@@ -36,6 +39,9 @@ interface SignUpForm {
     DividerModule,
     ReactiveFormsModule,
     InputErrorMessageComponent,
+    RouterLink,
+    IconFieldModule,
+    InputIconModule,
   ],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.css',
