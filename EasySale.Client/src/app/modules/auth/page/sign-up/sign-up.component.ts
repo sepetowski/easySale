@@ -13,6 +13,8 @@ import {
 } from '@angular/forms';
 import { validatePassword } from '../../../../shared/validators/validate-password.validator';
 import { validateConfirmPassword } from '../../../../shared/validators/validate-confirm-password.validator';
+import { CommonModule } from '@angular/common';
+import { InputErrorMessageComponent } from '../../../../shared/components/input-error-message/input-error-message.component';
 
 interface SignUpForm {
   username: FormControl<string>;
@@ -25,6 +27,7 @@ interface SignUpForm {
   selector: 'app-sign-up',
   standalone: true,
   imports: [
+    CommonModule,
     CardModule,
     ButtonModule,
     InputTextModule,
@@ -32,6 +35,7 @@ interface SignUpForm {
     PasswordModule,
     DividerModule,
     ReactiveFormsModule,
+    InputErrorMessageComponent,
   ],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.css',
@@ -42,8 +46,8 @@ export class SignUpComponent {
       username: new FormControl('', {
         validators: [
           Validators.required,
-          Validators.min(4),
-          Validators.max(30),
+          Validators.minLength(4),
+          Validators.maxLength(30),
         ],
         nonNullable: true,
       }),
