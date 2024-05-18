@@ -48,8 +48,8 @@ namespace EasySale.Server.Repositories
             {
                 Id = userExist.Id,
                 Email = userExist.Email,
-                JwtToken = token,
-                JwtTokenExpires = tokenExpires
+                JSONWebToken = token,
+                JSONWebTokenExpires = tokenExpires
             };
 
             return newUserResponse;
@@ -103,8 +103,8 @@ namespace EasySale.Server.Repositories
             {
                 Id = user.Id,
                 Email = user.Email,
-                JwtToken = token,
-                JwtTokenExpires = tokenExpires
+                JSONWebToken = token,
+                JSONWebTokenExpires = tokenExpires
             };
 
             return newUserResponse;
