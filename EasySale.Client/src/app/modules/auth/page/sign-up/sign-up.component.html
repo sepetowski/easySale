@@ -3,6 +3,7 @@
         <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()" class="w-full">
             <div class="space-y-2.5">
 
+                <button (click)="t()">adsa</button>
                 <div class="flex flex-col gap-1 ">
                     <label for="username">Username</label>
                     <p-iconField iconPosition="left">
@@ -108,9 +109,10 @@
 
             </div>
             <div class="mt-6">
-                <p-button [disabled]="!signUpForm.valid" type="submit" label="Create account" class="w-full"
-                    styleClass="w-full" />
+                <p-button iconPos="right" [loading]="isLoading" [disabled]="!signUpForm.valid" type="submit"
+                    [label]=" isLoading? 'Creating. Plase wait':'Create account'" class="w-full" styleClass="w-full" />
             </div>
+
         </form>
         <ng-template pTemplate="footer">
             <div class="flex  justify-center items-center">

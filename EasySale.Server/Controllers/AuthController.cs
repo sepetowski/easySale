@@ -1,5 +1,6 @@
 ﻿using EasySale.Server.Interfaces;
 using EasySale.Server.Models.DTO.Auth;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +9,7 @@ namespace EasySale.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("MyPolicy")]
     public class AuthController : ControllerBase
     {
 

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -22,6 +22,11 @@ import {
   MAX_USERNAME_LENGTH,
   MIN_USERNAME_LENGTH,
 } from '../../../../shared/validators/contstants';
+import { AuthService } from '../../../../core/services/auth.service';
+import { Subscription } from 'rxjs';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { RippleModule } from 'primeng/ripple';
 
 interface SignUpForm {
   username: FormControl<string>;
@@ -47,9 +52,17 @@ interface SignUpForm {
     IconFieldModule,
     InputIconModule,
   ],
+
   templateUrl: './sign-up.component.html',
 })
-export class SignUpComponent {
+export class SignUpComponent implements OnInit, OnDestroy {
+  isLoading = false;
+  errorMessage: null | string = null;
+  private loginSub: Subscription | null = null;
+  private errorMessageSub: Subscription | null = null;
+  private authService = inject(AuthService);
+  private messageService = inject(MessageService);
+
   signUpForm = new FormGroup<SignUpForm>(
     {
       username: new FormControl('', {
@@ -77,7 +90,29 @@ export class SignUpComponent {
   );
 
   onSubmit() {
-    console.log(this.signUpForm);
+    if (!this.signUpForm.valid) return;
+    this.authService.signUp(this.signUpForm.getRawValue());
     this.signUpForm.reset();
+  }
+  t() {}
+
+  ngOnInit(): void {
+    this.loginSub = this.authService.isLoading.subscribe(
+      (isLoading) => (this.isLoading = isLoading)
+    );
+    this.errorMessageSub = this.authService.errorMessage.subscribe((err) => {
+      if (err)
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Failed to sign up',
+          detail: err,
+          life: 5000,
+        });
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.loginSub?.unsubscribe();
+    this.errorMessageSub?.unsubscribe();
   }
 }
