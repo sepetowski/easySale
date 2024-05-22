@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -21,6 +21,9 @@ import {
   MAX_USERNAME_LENGTH,
 } from '../../../../shared/validators/contstants';
 import { validatePassword } from '../../../../shared/validators/validate-password.validator';
+import { MessageService } from 'primeng/api';
+import { Subscription } from 'rxjs';
+import { AuthService } from '../../../../core/services/auth.service';
 
 interface SignInForm {
   username: FormControl<string>;
@@ -46,7 +49,14 @@ interface SignInForm {
   ],
   templateUrl: './sign-in.component.html',
 })
-export class SignInComponent {
+export class SignInComponent implements OnInit, OnDestroy {
+  isLoading = false;
+  errorMessage: null | string = null;
+  private loginSub: Subscription | null = null;
+  private errorMessageSub: Subscription | null = null;
+  private authService = inject(AuthService);
+  private messageService = inject(MessageService);
+
   signInForm = new FormGroup<SignInForm>({
     username: new FormControl('', {
       validators: [
@@ -63,7 +73,30 @@ export class SignInComponent {
   });
 
   onSubmit() {
-    console.log(this.signInForm);
+    if (!this.signInForm.valid) return;
+    this.authService.signIn(this.signInForm.getRawValue());
     this.signInForm.reset();
+  }
+
+  ngOnInit(): void {
+    this.loginSub = this.authService.isLoading.subscribe(
+      (isLoading) => (this.isLoading = isLoading)
+    );
+    this.errorMessageSub = this.authService.errorMessage.subscribe((err) => {
+      if (err)
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Failed to sign in',
+          detail: err,
+          life: 5000,
+        });
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.authService.resetError();
+
+    this.loginSub?.unsubscribe();
+    this.errorMessageSub?.unsubscribe();
   }
 }

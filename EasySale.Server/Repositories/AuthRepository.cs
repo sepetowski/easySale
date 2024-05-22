@@ -23,6 +23,16 @@ namespace EasySale.Server.Repositories
             _context = context;
         }
 
+        public async Task<CheckUsernameResponseDTO> CheckUsernameExistAsync(CheckUsernameRequestDTO checkUsernameRequestDTO)
+        {
+            var userExist = await _context.Users.FirstOrDefaultAsync((user) => user.Username == checkUsernameRequestDTO.Username);
+
+           
+            var res = new CheckUsernameResponseDTO { Exist = userExist != null };
+           
+            return  res;
+        }
+
 
         public async Task<UserRegisterAndLoginResponseDTO?> LoginUserAsync(UserLoginRequestDTO userLoginRequestDTO)
         {
@@ -48,6 +58,9 @@ namespace EasySale.Server.Repositories
             {
                 Id = userExist.Id,
                 Email = userExist.Email,
+                Username = userExist.Username,
+                FirstName=userExist.FirstName,
+                LastName = userExist.LastName,
                 JSONWebToken = token,
                 JSONWebTokenExpires = tokenExpires
             };
@@ -70,7 +83,7 @@ namespace EasySale.Server.Repositories
             {
                 throw new Exception("This email exit");
             }
-
+           
             var existUsername = await _context.Users.FirstOrDefaultAsync((user) => user.Username == username);
             if (existUsername != null)
             {
@@ -103,6 +116,9 @@ namespace EasySale.Server.Repositories
             {
                 Id = user.Id,
                 Email = user.Email,
+                FirstName= user.FirstName,
+                LastName= user.LastName,
+                Username=user.Username,
                 JSONWebToken = token,
                 JSONWebTokenExpires = tokenExpires
             };

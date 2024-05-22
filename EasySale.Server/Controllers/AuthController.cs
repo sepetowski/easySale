@@ -57,5 +57,13 @@ namespace EasySale.Server.Controllers
 
         }
 
+        [HttpPost("username-exist")]
+        public async Task<IActionResult> CheckUsernameExist([FromBody] CheckUsernameRequestDTO checkUsernameRequestDTO)
+        {
+
+            var exist = await _authRepository.CheckUsernameExistAsync(checkUsernameRequestDTO);
+            return Ok(exist);
+        }
+
     }
 }

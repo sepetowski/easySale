@@ -7,6 +7,14 @@ namespace EasySale.Server.Data
     {
         public DataContext(DbContextOptions<DataContext> dbContextOptions) : base(dbContextOptions) { }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.UseCollation("SQL_Latin1_General_CP1_CS_AS");
+
+           
+        }
+
+
         public DbSet<User> Users => Set<User>();
     }
 }

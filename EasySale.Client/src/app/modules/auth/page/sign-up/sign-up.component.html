@@ -3,17 +3,21 @@
         <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()" class="w-full">
             <div class="space-y-2.5">
 
-                <button (click)="t()">adsa</button>
                 <div class="flex flex-col gap-1 ">
                     <label for="username">Username</label>
-                    <p-iconField iconPosition="left">
-                        <p-inputIcon styleClass="pi pi-user" />
+                    <p-iconField iconPosition="right">
+                        @if (signUpForm.pending) {
+                        <p-inputIcon styleClass="pi pi-spinner pi-spin" />
+                        }
                         <input placeholder="Username"
                             [ngClass]="!signUpForm.controls.username.valid && signUpForm.controls.username.touched?'ng-invalid ng-dirty':''"
                             id="username" class="w-full" type="text" pInputText formControlName="username" />
                     </p-iconField>
                     @if(!signUpForm.controls.username.valid && signUpForm.controls.username.touched){
                     <div>
+                        @if (signUpForm.controls.username.getError("asyncInvalid")) {
+                        <app-input-error-message message="This username is already taken" />
+                        }
                         @if (signUpForm.controls.username.getError("required")) {
                         <app-input-error-message message="Username is required" />
                         }
@@ -29,12 +33,12 @@
 
                 <div class="flex flex-col gap-1">
                     <label for="email">Email</label>
-                    <p-iconField iconPosition="left">
-                        <p-inputIcon styleClass="pi pi-envelope" />
-                        <input placeholder="Email"
-                            [ngClass]="!signUpForm.controls.email.valid && signUpForm.controls.email.touched?'ng-invalid ng-dirty':''"
-                            id="email" class="w-full" type="text" pInputText formControlName="email" />
-                    </p-iconField>
+
+
+                    <input placeholder="Email"
+                        [ngClass]="!signUpForm.controls.email.valid && signUpForm.controls.email.touched?'ng-invalid ng-dirty':''"
+                        id="email" class="w-full" type="text" pInputText formControlName="email" />
+
 
                     @if(!signUpForm.controls.email.valid && signUpForm.controls.email.touched){
                     <div>

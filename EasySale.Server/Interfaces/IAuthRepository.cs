@@ -8,6 +8,8 @@ namespace EasySale.Server.Interfaces
 
         Task<UserRegisterAndLoginResponseDTO?> CreateNewUserAsync(UserRegisterRequestDTO userRegisterRequestDTO);
         Task<UserRegisterAndLoginResponseDTO?> LoginUserAsync(UserLoginRequestDTO userLoginRequestDTO);
+
+        Task<CheckUsernameResponseDTO> CheckUsernameExistAsync(CheckUsernameRequestDTO checkUsernameRequestDTO);
         
     }
 }

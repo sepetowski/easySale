@@ -6,8 +6,16 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 interface UserResponseData {
   id: string;
   email: string;
+  username: string;
+  firstName: string | null;
+  lastName: string | null;
   jsonWebToken: string;
   jsonWebTokenExpires: Date;
+}
+
+interface UserLoginData {
+  username: string;
+  password: string;
 }
 
 interface UserRegisterData {
@@ -47,6 +55,28 @@ export class AuthService {
       });
   }
 
+  public resetError() {
+    this._errorMessage.next(null);
+  }
+
+  public signIn(userData: UserLoginData) {
+    this._isLoading.next(true);
+
+    this._http
+      .post<UserResponseData>('https://localhost:7198/api/auth/login', userData)
+      .subscribe({
+        next: this.handleAuth.bind(this),
+        error: this.handleError.bind(this),
+      });
+  }
+
+  public checkUsernameAvaible(username: string) {
+    return this._http.post<{ exist: boolean }>(
+      'https://localhost:7198/api/auth/username-exist',
+      { username }
+    );
+  }
+
   private handleAuth(authData: UserResponseData) {
     this._isLoading.next(false);
     this._errorMessage.next(null);
@@ -56,10 +86,6 @@ export class AuthService {
 
   private handleError(err: HttpErrorResponse) {
     this._isLoading.next(false);
-    const defaultMessage = 'An error occured';
-    const errorMg =
-      err.error && typeof err.error === 'string' ? err.error : defaultMessage;
-
-    this._errorMessage.next(errorMg);
+    this._errorMessage.next(err.message);
   }
 }

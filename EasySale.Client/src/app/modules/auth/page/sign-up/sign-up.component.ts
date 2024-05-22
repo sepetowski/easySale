@@ -24,9 +24,8 @@ import {
 } from '../../../../shared/validators/contstants';
 import { AuthService } from '../../../../core/services/auth.service';
 import { Subscription } from 'rxjs';
-import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
-import { RippleModule } from 'primeng/ripple';
+import { validateUsernameAsync } from '../../../../shared/validators/validate-username-async.validator';
 
 interface SignUpForm {
   username: FormControl<string>;
@@ -71,6 +70,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
           Validators.minLength(MIN_USERNAME_LENGTH),
           Validators.maxLength(MAX_USERNAME_LENGTH),
         ],
+        asyncValidators: validateUsernameAsync(),
         nonNullable: true,
       }),
       email: new FormControl('', {
@@ -94,7 +94,6 @@ export class SignUpComponent implements OnInit, OnDestroy {
     this.authService.signUp(this.signUpForm.getRawValue());
     this.signUpForm.reset();
   }
-  t() {}
 
   ngOnInit(): void {
     this.loginSub = this.authService.isLoading.subscribe(
@@ -112,6 +111,8 @@ export class SignUpComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.authService.resetError();
+
     this.loginSub?.unsubscribe();
     this.errorMessageSub?.unsubscribe();
   }
