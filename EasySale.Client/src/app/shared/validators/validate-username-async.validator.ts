@@ -1,5 +1,5 @@
 import { AbstractControl, AsyncValidatorFn } from '@angular/forms';
-import { AuthService } from '../../core/services/auth.service';
+import { AuthService } from '../../core/services/auth/auth.service';
 import { timer } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { inject } from '@angular/core';

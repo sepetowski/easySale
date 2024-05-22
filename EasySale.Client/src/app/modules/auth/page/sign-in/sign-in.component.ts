@@ -23,7 +23,7 @@ import {
 import { validatePassword } from '../../../../shared/validators/validate-password.validator';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import { AuthService } from '../../../../core/services/auth.service';
+import { AuthService } from '../../../../core/services/auth/auth.service';
 
 interface SignInForm {
   username: FormControl<string>;

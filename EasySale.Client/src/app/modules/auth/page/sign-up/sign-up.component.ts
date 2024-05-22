@@ -22,7 +22,7 @@ import {
   MAX_USERNAME_LENGTH,
   MIN_USERNAME_LENGTH,
 } from '../../../../shared/validators/contstants';
-import { AuthService } from '../../../../core/services/auth.service';
+import { AuthService } from '../../../../core/services/auth/auth.service';
 import { Subscription } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { validateUsernameAsync } from '../../../../shared/validators/validate-username-async.validator';

@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { User } from '../../models/user.model';
+import { User } from '../../../models/user.model';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 interface UserResponseData {
@@ -39,6 +39,9 @@ export class AuthService {
   }
   public get errorMessage() {
     return this._errorMessage.asObservable();
+  }
+  public get user() {
+    return this._user.asObservable();
   }
 
   public signUp(userData: UserRegisterData) {
@@ -81,11 +84,26 @@ export class AuthService {
     this._isLoading.next(false);
     this._errorMessage.next(null);
 
-    console.log(authData);
+    this.saveUserData(authData);
   }
 
   private handleError(err: HttpErrorResponse) {
     this._isLoading.next(false);
     this._errorMessage.next(err.message);
+  }
+
+  private saveUserData(authData: UserResponseData) {
+    const user = new User(
+      authData.id,
+      authData.username,
+      authData.firstName,
+      authData.lastName,
+      authData.email,
+      authData.jsonWebToken,
+      authData.jsonWebTokenExpires
+    );
+
+    this._user.next(user);
+    localStorage.setItem('user', JSON.stringify(user));
   }
 }
