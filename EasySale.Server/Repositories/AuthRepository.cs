@@ -3,9 +3,11 @@ using EasySale.Server.Data;
 using EasySale.Server.Interfaces;
 using EasySale.Server.Models.Domain;
 using EasySale.Server.Models.DTO.Auth;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -34,7 +36,7 @@ namespace EasySale.Server.Repositories
         }
 
 
-        public async Task<UserRegisterAndLoginResponseDTO?> LoginUserAsync(UserLoginRequestDTO userLoginRequestDTO)
+        public async Task<UserLoginResponseDTO?> LoginUserAsync(UserLoginRequestDTO userLoginRequestDTO)
         {
             string username = userLoginRequestDTO.Username;
 
@@ -51,10 +53,17 @@ namespace EasySale.Server.Repositories
                 throw new Exception("Password is incorrect.");
             }
 
-            var tokenExpires = DateTime.Now.AddMinutes(120);
-            string token = GenerateJwtToken(tokenExpires);
+            var tokenExpires = DateTime.Now.AddMinutes(60);
+            string token = GenerateJwtToken(tokenExpires,userExist.Username,userExist.Email);
 
-            var newUserResponse = new UserRegisterAndLoginResponseDTO
+            string refreshToken = CreateRandomToken();
+
+            userExist.RefreshToken = refreshToken;
+            userExist.RefreshTokenExpires = DateTime.Now.AddDays(1);
+
+            await _context.SaveChangesAsync();
+
+            var newUserResponse = new UserLoginResponseDTO
             {
                 Id = userExist.Id,
                 Email = userExist.Email,
@@ -62,7 +71,9 @@ namespace EasySale.Server.Repositories
                 FirstName=userExist.FirstName,
                 LastName = userExist.LastName,
                 JSONWebToken = token,
-                JSONWebTokenExpires = tokenExpires
+                JSONWebTokenExpires = tokenExpires,
+                RefreshToken=refreshToken,
+                
             };
 
             return newUserResponse;
@@ -71,12 +82,13 @@ namespace EasySale.Server.Repositories
         }
 
 
-
-        public async Task<UserRegisterAndLoginResponseDTO?> CreateNewUserAsync(UserRegisterRequestDTO userRegisterRequestDTO)
+        public async Task<UserRegisterResponseDTO?> CreateNewUserAsync(UserRegisterRequestDTO userRegisterRequestDTO)
         {
 
             string username= userRegisterRequestDTO.Username;
             string email = userRegisterRequestDTO.Email;
+
+                
 
             var existEmail = await _context.Users.FirstOrDefaultAsync((user) => user.Email == email);
             if (existEmail != null)
@@ -94,8 +106,7 @@ namespace EasySale.Server.Repositories
             
             CreatePasswordHash(userRegisterRequestDTO.Password,out byte[] passwordHash,out byte[] passwordSalt);
 
-            var tokenExpires = DateTime.Now.AddMinutes(120);
-            string token= GenerateJwtToken(tokenExpires);
+            
 
 
             var user = new User
@@ -112,19 +123,49 @@ namespace EasySale.Server.Repositories
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
 
-            var newUserResponse=new UserRegisterAndLoginResponseDTO
+            var newUserResponse=new UserRegisterResponseDTO
             {
                 Id = user.Id,
                 Email = user.Email,
-                FirstName= user.FirstName,
-                LastName= user.LastName,
                 Username=user.Username,
-                JSONWebToken = token,
-                JSONWebTokenExpires = tokenExpires
+               
             };
-
+            
             return newUserResponse;
 
+        }
+
+        public async Task<RefreshTokenResponseDTO?> GenerateRefreshTokenAsync(RefreshTokenRequestDTO refreshTokenRequestDTO)
+        {
+            var principal = GetTokenPrincipal(refreshTokenRequestDTO.Token);
+            var username = principal?.Identity?.Name;
+
+            if(username == null) {
+                return null;
+            }
+
+            var user= await _context.Users.FirstOrDefaultAsync((user=>user.Username == username));
+
+            if (user is null || user.RefreshToken != refreshTokenRequestDTO.RefreshToken || user.RefreshTokenExpires < DateTime.Now)
+                return null;
+
+            var tokenExpires = DateTime.Now.AddMinutes(60);
+            string token = GenerateJwtToken(tokenExpires, user.Username, user.Email);
+
+            string refreshToken = CreateRandomToken();
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpires = DateTime.Now.AddDays(1);
+
+            await _context.SaveChangesAsync();
+
+            var res = new RefreshTokenResponseDTO
+            {
+                Token=token,
+                RefreshToken = refreshToken,
+
+            };
+
+            return res;
         }
 
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
@@ -147,26 +188,49 @@ namespace EasySale.Server.Repositories
             }
         }
 
+        
+
         private string CreateRandomToken()
         {
             return Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
         }
-        private string GenerateJwtToken(DateTime tokenExpires)
+        private string GenerateJwtToken(DateTime tokenExpires,string username,string email)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
+            var claims = new List<Claim>
+            {
+                new (ClaimTypes.Name,username),
+                new (ClaimTypes.Email,email)
+            };
 
-            var Sectoken = new JwtSecurityToken(
+            var secToken = new JwtSecurityToken(
               _config["Jwt:Issuer"],
               _config["Jwt:Audience"],
+              claims,
               null,
               expires: tokenExpires,
               signingCredentials: credentials);
 
-            return new JwtSecurityTokenHandler().WriteToken(Sectoken);
+            return new JwtSecurityTokenHandler().WriteToken(secToken);
 
            
+        }
+        private ClaimsPrincipal? GetTokenPrincipal(string token)
+        {
+
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+
+            var validation = new TokenValidationParameters
+            {
+                IssuerSigningKey = securityKey,
+                ValidateLifetime = false,
+                ValidateActor = false,
+                ValidateIssuer = false,
+                ValidateAudience = false,
+            };
+            return new JwtSecurityTokenHandler().ValidateToken(token, validation, out _);
         }
     }
     

@@ -1,6 +1,6 @@
 ﻿namespace EasySale.Server.Models.DTO.Auth
 {
-    public class UserRegisterAndLoginResponseDTO
+    public class UserLoginResponseDTO
     {
         public required Guid Id { get; set; }
         public required string Username { get; set; }
@@ -9,6 +9,6 @@
         public required string Email { get; set; }
         public required string JSONWebToken { get; set; }
         public required DateTime JSONWebTokenExpires { get; set; }
-
+        public string? RefreshToken { get; set; }
     }
 }

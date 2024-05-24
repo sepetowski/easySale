@@ -12,14 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EasySale.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240518120543_Update User")]
-    partial class UpdateUser
+    [Migration("20240524173745_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .UseCollation("SQL_Latin1_General_CP1_CS_AS")
                 .HasAnnotation("ProductVersion", "8.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
@@ -41,9 +42,6 @@ namespace EasySale.Server.Migrations
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("JwtToken")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
 
@@ -57,6 +55,12 @@ namespace EasySale.Server.Migrations
                     b.Property<byte[]>("PasswordSalt")
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RefreshTokenExpires")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("ResetTokenExpires")
                         .HasColumnType("datetime2");

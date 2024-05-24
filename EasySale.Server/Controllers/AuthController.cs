@@ -64,6 +64,14 @@ namespace EasySale.Server.Controllers
             var exist = await _authRepository.CheckUsernameExistAsync(checkUsernameRequestDTO);
             return Ok(exist);
         }
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> GenerateRefreshToken([FromBody] RefreshTokenRequestDTO refreshTokenDTO)
+        {
+            var res= await _authRepository.GenerateRefreshTokenAsync(refreshTokenDTO);
+            if(res==null)
+                return Unauthorized();
 
+            return Ok(res);
+        }
     }
 }

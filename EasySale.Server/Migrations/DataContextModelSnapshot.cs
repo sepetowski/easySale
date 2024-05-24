@@ -53,6 +53,12 @@ namespace EasySale.Server.Migrations
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("RefreshTokenExpires")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime?>("ResetTokenExpires")
                         .HasColumnType("datetime2");
 

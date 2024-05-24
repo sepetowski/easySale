@@ -12,6 +12,8 @@
         public DateTime? VerifiedAt { get; set; }
         public string? PasswordResetToken { get; set; }
         public DateTime? ResetTokenExpires { get; set; }
+        public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpires { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set;}
        
