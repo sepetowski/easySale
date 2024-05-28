@@ -26,7 +26,7 @@ namespace EasySale.Server.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserRegisterRequestDTO request)
         {
-
+           
             try
             {
             var newUser = await _authRepository.CreateNewUserAsync(request);
@@ -52,6 +52,7 @@ namespace EasySale.Server.Controllers
             }
             catch (Exception ex)
             {
+
                 return BadRequest(ex.Message);
             }
 

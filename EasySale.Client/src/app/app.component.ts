@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { MessageService, PrimeNGConfig } from 'primeng/api';
 import { RouterOutlet } from '@angular/router';
 import { ToastModule } from 'primeng/toast';
+import { AuthService } from './core/services/auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -11,9 +12,11 @@ import { ToastModule } from 'primeng/toast';
   providers: [MessageService],
 })
 export class AppComponent implements OnInit {
-  private primengConfig = inject(PrimeNGConfig);
+  private _primengConfig = inject(PrimeNGConfig);
+  private _authService = inject(AuthService);
 
   ngOnInit() {
-    this.primengConfig.ripple = true;
+    this._primengConfig.ripple = true;
+    this._authService.tryToSignInOnStart();
   }
 }

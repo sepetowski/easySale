@@ -5,8 +5,9 @@ export class User {
     private _firstName: string | null,
     private _lastName: string | null,
     private _email: string,
-    private _token: string | null,
-    private _tokenExpirationDate: Date | null
+    private _token: string,
+    private _tokenExpirationDate: Date | null,
+    private _refreshToken: string
   ) {}
 
   get id() {
@@ -14,6 +15,9 @@ export class User {
   }
   get username() {
     return this._username;
+  }
+  get refreshToken() {
+    return this._refreshToken;
   }
   get firstName() {
     return this._firstName;
@@ -27,9 +31,6 @@ export class User {
   }
 
   get token() {
-    if (!this._tokenExpirationDate || new Date() > this._tokenExpirationDate) {
-      return null;
-    }
     return this._token;
   }
 

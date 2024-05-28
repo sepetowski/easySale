@@ -162,6 +162,7 @@ namespace EasySale.Server.Repositories
             {
                 Token=token,
                 RefreshToken = refreshToken,
+                TokenExpires=tokenExpires
 
             };
 
