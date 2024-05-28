@@ -2,7 +2,7 @@ import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { HttpParams } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { AuthService } from '../services/auth/auth.service';
-import { catchError, switchMap } from 'rxjs/operators';
+import { catchError, exhaustMap, take } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 import { Router } from '@angular/router';
 
@@ -11,7 +11,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
 
   return authService.user.pipe(
-    switchMap((user) => {
+    take(1),
+    exhaustMap((user) => {
       if (!user) return next(req);
 
       const newReq = req.clone({

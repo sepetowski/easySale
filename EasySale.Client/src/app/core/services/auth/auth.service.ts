@@ -54,13 +54,18 @@ interface RefreshTokenReq {
   refreshToken: string;
 }
 
+interface Message {
+  type: 'error' | 'success';
+  message: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private _user = new BehaviorSubject<User | null>(null);
   private _isLoading = new BehaviorSubject<boolean>(false);
-  private _errorMessage = new BehaviorSubject<null | string>(null);
+  private _message = new BehaviorSubject<null | Message>(null);
 
   private _tokenExpirationTimer: NodeJS.Timeout | null = null;
 
@@ -70,8 +75,8 @@ export class AuthService {
   public get isLoading() {
     return this._isLoading.asObservable();
   }
-  public get errorMessage() {
-    return this._errorMessage.asObservable();
+  public get message() {
+    return this._message.asObservable();
   }
   public get user() {
     return this._user.asObservable();
@@ -130,7 +135,7 @@ export class AuthService {
   }
 
   public resetError() {
-    this._errorMessage.next(null);
+    this._message.next(null);
   }
 
   public signIn(userData: UserLoginData) {
@@ -155,18 +160,18 @@ export class AuthService {
   }
 
   private handleRegistration(userResponse: UserRegisterResponseData) {
-    console.log(userResponse);
-
+    this._message.next({ type: 'success', message: 'You have been register!' });
     this._isLoading.next(false);
-    this._errorMessage.next(null);
+    this._message.next(null);
 
     this._router.navigate(['/sign-in']);
   }
 
   private handleAuth(authData: UserLoginResponseData) {
+    this._message.next({ type: 'success', message: 'You have been sign in!' });
     console.log(authData);
     this._isLoading.next(false);
-    this._errorMessage.next(null);
+    this._message.next(null);
 
     const user = new User(
       authData.id,
@@ -189,7 +194,7 @@ export class AuthService {
 
   private handleError(err: HttpErrorResponse) {
     this._isLoading.next(false);
-    this._errorMessage.next(err.error);
+    this._message.next({ type: 'error', message: err.error });
   }
 
   private startTokenExpirationCountdown(expirationDuration: number) {
@@ -197,7 +202,6 @@ export class AuthService {
     console.log(expirationDuration);
 
     this._tokenExpirationTimer = setTimeout(() => {
-      console.log('refresh token');
       this.refreshToken();
     }, expirationDuration);
   }

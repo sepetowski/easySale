@@ -53,7 +53,7 @@ export class SignInComponent implements OnInit, OnDestroy {
   isLoading = false;
   errorMessage: null | string = null;
   private loginSub: Subscription | null = null;
-  private errorMessageSub: Subscription | null = null;
+  private messageSub: Subscription | null = null;
   private authService = inject(AuthService);
   private messageService = inject(MessageService);
 
@@ -82,12 +82,15 @@ export class SignInComponent implements OnInit, OnDestroy {
     this.loginSub = this.authService.isLoading.subscribe(
       (isLoading) => (this.isLoading = isLoading)
     );
-    this.errorMessageSub = this.authService.errorMessage.subscribe((err) => {
-      if (err)
+    this.messageSub = this.authService.message.subscribe((message) => {
+      if (message)
         this.messageService.add({
-          severity: 'error',
-          summary: 'Failed to sign in',
-          detail: err,
+          severity: message.type,
+          summary:
+            message.type === 'error'
+              ? 'Failed to sign in'
+              : 'Sign in successful',
+          detail: message.message,
           life: 5000,
         });
     });
@@ -97,6 +100,6 @@ export class SignInComponent implements OnInit, OnDestroy {
     this.authService.resetError();
 
     this.loginSub?.unsubscribe();
-    this.errorMessageSub?.unsubscribe();
+    this.messageSub?.unsubscribe();
   }
 }
