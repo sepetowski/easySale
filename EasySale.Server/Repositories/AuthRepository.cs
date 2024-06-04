@@ -23,6 +23,7 @@ namespace EasySale.Server.Repositories
         {
             _config = config;   
             _context = context;
+            
         }
 
         public async Task<CheckUsernameResponseDTO> CheckUsernameExistAsync(CheckUsernameRequestDTO checkUsernameRequestDTO)
@@ -117,7 +118,6 @@ namespace EasySale.Server.Repositories
                 Email = userRegisterRequestDTO.Email,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
-                VerificationToken = CreateRandomToken()
             };
 
             await _context.Users.AddAsync(user);
@@ -130,6 +130,8 @@ namespace EasySale.Server.Repositories
                 Username=user.Username,
                
             };
+
+           
             
             return newUserResponse;
 

@@ -2,25 +2,39 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SignInComponent } from './sign-in.component';
 import { provideRouter } from '@angular/router';
-import { routes } from '../../../../routes/app.routes';
+
 import {
   MAX_USERNAME_LENGTH,
   MIN_USERNAME_LENGTH,
 } from '../../../../shared/validators/contstants';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
+import { HttpClient } from '@angular/common/http';
+import { routes } from '../../../../routes/app.routes';
+import { MessageService } from 'primeng/api';
 
 describe('SignInComponent', () => {
   let component: SignInComponent;
   let fixture: ComponentFixture<SignInComponent>;
+  let httpClient: HttpClient;
+  let httpTestingController: HttpTestingController;
+  let messageService: MessageService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SignInComponent],
-      providers: [provideRouter(routes)],
+      imports: [SignInComponent, HttpClientTestingModule],
+      providers: [provideRouter(routes), MessageService],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SignInComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+
+    httpClient = TestBed.inject(HttpClient);
+    httpTestingController = TestBed.inject(HttpTestingController);
+    messageService = TestBed.inject(MessageService);
   });
 
   it('should create', () => {

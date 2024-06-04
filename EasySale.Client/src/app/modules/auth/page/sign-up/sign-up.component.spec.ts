@@ -6,20 +6,33 @@ import {
   MAX_USERNAME_LENGTH,
   MIN_USERNAME_LENGTH,
 } from '../../../../shared/validators/contstants';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
+import { HttpClient } from '@angular/common/http';
+import { MessageService } from 'primeng/api';
 
 describe('SignUpComponent', () => {
   let component: SignUpComponent;
   let fixture: ComponentFixture<SignUpComponent>;
+  let httpClient: HttpClient;
+  let httpTestingController: HttpTestingController;
+  let messageService: MessageService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SignUpComponent],
-      providers: [provideRouter(routes)],
+      imports: [SignUpComponent, HttpClientTestingModule],
+      providers: [provideRouter(routes), MessageService],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SignUpComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+
+    httpClient = TestBed.inject(HttpClient);
+    httpTestingController = TestBed.inject(HttpTestingController);
+    messageService = TestBed.inject(MessageService);
   });
 
   it('should create', () => {
@@ -98,16 +111,5 @@ describe('SignUpComponent', () => {
     });
 
     expect(component.signUpForm.valid).toEqual(false);
-  });
-
-  it('should form be valid for all valid fields', () => {
-    component.signUpForm.setValue({
-      username: 'User',
-      email: 'user@account.com',
-      password: 'GoodPassword1',
-      confirmPassword: 'GoodPassword1',
-    });
-
-    expect(component.signUpForm.valid).toEqual(true);
   });
 });

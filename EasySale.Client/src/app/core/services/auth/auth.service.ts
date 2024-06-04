@@ -3,61 +3,16 @@ import { BehaviorSubject } from 'rxjs';
 import { User } from '../../../models/user.model';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-
-interface JsonUser {
-  _email: string;
-  _firstName: string | null;
-  _id: string;
-  _lastName: string | null;
-  _token: string;
-  _tokenExpirationDate: string;
-  _username: string;
-  _refreshToken: string;
-}
-
-interface UserRegisterResponseData {
-  id: string;
-  email: string;
-  username: string;
-}
-
-interface UserLoginResponseData {
-  id: string;
-  email: string;
-  username: string;
-  firstName: string | null;
-  lastName: string | null;
-  jsonWebToken: string;
-  jsonWebTokenExpires: Date;
-  refreshToken: string;
-}
-
-interface UserLoginData {
-  username: string;
-  password: string;
-}
-
-interface UserRegisterData {
-  username: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
-
-interface RefreshTokenRes {
-  token: string;
-  refreshToken: string;
-  tokenExpires: string;
-}
-interface RefreshTokenReq {
-  token: string;
-  refreshToken: string;
-}
-
-interface Message {
-  type: 'error' | 'success';
-  message: string;
-}
+import {
+  Message,
+  JsonUser,
+  RefreshTokenReq,
+  RefreshTokenRes,
+  UserLoginData,
+  UserLoginResponseData,
+  UserRegisterData,
+  UserRegisterResponseData,
+} from '../../../interfaces/auth';
 
 @Injectable({
   providedIn: 'root',
@@ -129,7 +84,7 @@ export class AuthService {
     this._user.next(null);
 
     localStorage.removeItem('user');
-    this._router.navigate(['/']);
+    this._router.navigate(['/auth/sign-in']);
 
     this.clearTokenExpirationTimer();
   }
@@ -193,6 +148,8 @@ export class AuthService {
 
     this.startTokenExpirationCountdown(expirationDuration);
     localStorage.setItem('user', JSON.stringify(user));
+
+    this._router.navigate(['/']);
   }
 
   private handleError(err: HttpErrorResponse) {
