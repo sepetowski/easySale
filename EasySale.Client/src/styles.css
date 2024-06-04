@@ -2,3 +2,7 @@
 @import "../node_modules/tailwindcss/base.css" layer(tailwindcss);
 @import "../node_modules/tailwindcss/components.css" layer(tailwindcss);
 @import "../node_modules/tailwindcss/utilities.css" layer(tailwindcss);
+
+.p-toast .p-toast-message .p-toast-message-content {
+  border-width: 0px;
+}
