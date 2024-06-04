@@ -11,7 +11,7 @@ export const validateUsernameAsync = (): AsyncValidatorFn => {
     return timer(500).pipe(
       switchMap(() =>
         authService
-          .checkUsernameAvaible(control.value)
+          .checkUsernameAvailable(control.value)
           .pipe(map((result) => (result.exist ? { asyncInvalid: true } : null)))
       )
     );
