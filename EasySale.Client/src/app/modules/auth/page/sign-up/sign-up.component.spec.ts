@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SignUpComponent } from './sign-up.component';
 import { provideRouter } from '@angular/router';
-import { routes } from '../../../../app.routes';
+import { routes } from '../../../../routes/app.routes';
 import {
   MAX_USERNAME_LENGTH,
   MIN_USERNAME_LENGTH,

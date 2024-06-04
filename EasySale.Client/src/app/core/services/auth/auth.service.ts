@@ -160,11 +160,14 @@ export class AuthService {
   }
 
   private handleRegistration(userResponse: UserRegisterResponseData) {
-    this._message.next({ type: 'success', message: 'You have been register!' });
+    this._message.next({
+      type: 'success',
+      message: `You have been register ${userResponse.username}!`,
+    });
     this._isLoading.next(false);
     this._message.next(null);
 
-    this._router.navigate(['/sign-in']);
+    this._router.navigate(['/auth/sign-in']);
   }
 
   private handleAuth(authData: UserLoginResponseData) {

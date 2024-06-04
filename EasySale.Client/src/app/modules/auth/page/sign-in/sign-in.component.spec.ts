@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SignInComponent } from './sign-in.component';
 import { provideRouter } from '@angular/router';
-import { routes } from '../../../../app.routes';
+import { routes } from '../../../../routes/app.routes';
 import {
   MAX_USERNAME_LENGTH,
   MIN_USERNAME_LENGTH,

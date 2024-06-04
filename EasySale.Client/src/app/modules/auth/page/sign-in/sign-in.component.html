@@ -60,17 +60,10 @@
             </div>
 
         </form>
-        <ng-template pTemplate="footer">
-            <div class="flex flex-col gap-1 justify-center items-center">
-                <a routerLink="/" class="text-sm text-gray-300 hover:underline">
-                    Do you have any login issues?
-                </a>
 
-            </div>
-        </ng-template>
     </p-card>
     <div class="flex gap-1 justify-center items-center">
         <p>Don't have an account?</p>
-        <p-button [style]="{padding: '0px'}" routerLink="/sign-up" label="Sign up" [link]="true" />
+        <p-button [style]="{padding: '0px'}" routerLink="/auth/sign-up" label="Sign up" [link]="true" />
     </div>
 </main>
