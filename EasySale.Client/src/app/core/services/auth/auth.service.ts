@@ -84,9 +84,9 @@ export class AuthService {
     this._user.next(null);
 
     localStorage.removeItem('user');
-    this._router.navigate(['/auth/sign-in']);
-
     this.clearTokenExpirationTimer();
+
+    this._router.navigate(['/auth/sign-in']);
   }
 
   public resetError() {
@@ -107,7 +107,7 @@ export class AuthService {
       });
   }
 
-  public checkUsernameAvaible(username: string) {
+  public checkUsernameAvailable(username: string) {
     return this._http.post<{ exist: boolean }>(
       'https://localhost:7198/api/auth/username-exist',
       { username }
@@ -127,7 +127,6 @@ export class AuthService {
 
   private handleAuth(authData: UserLoginResponseData) {
     this._message.next({ type: 'success', message: 'You have been sign in!' });
-    console.log(authData);
     this._isLoading.next(false);
     this._message.next(null);
 
@@ -142,14 +141,16 @@ export class AuthService {
       authData.refreshToken
     );
 
-    this._user.next(user);
     const expirationDuration =
       user.tokenExpirationDate!.getTime() - new Date().getTime();
 
-    this.startTokenExpirationCountdown(expirationDuration);
-    localStorage.setItem('user', JSON.stringify(user));
+    if (expirationDuration > 0) {
+      this._user.next(user);
+      this.startTokenExpirationCountdown(expirationDuration);
+      localStorage.setItem('user', JSON.stringify(user));
 
-    this._router.navigate(['/']);
+      this._router.navigate(['/']);
+    }
   }
 
   private handleError(err: HttpErrorResponse) {
@@ -159,7 +160,6 @@ export class AuthService {
 
   private startTokenExpirationCountdown(expirationDuration: number) {
     this.clearTokenExpirationTimer();
-    console.log(expirationDuration);
 
     this._tokenExpirationTimer = setTimeout(() => {
       this.refreshToken();
@@ -208,14 +208,16 @@ export class AuthService {
         refreshTokenRes.refreshToken
       );
 
-      this._user.next(newUser);
-
       const expirationDuration =
         newUser.tokenExpirationDate!.getTime() - new Date().getTime();
 
-      this.startTokenExpirationCountdown(expirationDuration);
+      if (expirationDuration > 0) {
+        this._user.next(newUser);
 
-      localStorage.setItem('user', JSON.stringify(newUser));
+        this.startTokenExpirationCountdown(expirationDuration);
+
+        localStorage.setItem('user', JSON.stringify(newUser));
+      }
     }
   }
 }

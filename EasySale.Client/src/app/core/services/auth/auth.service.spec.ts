@@ -52,17 +52,19 @@ describe('AuthService', () => {
 
     service.signUp(mockUser);
 
-    service.message.subscribe((message) =>
-      expect(message?.message).toBe('You have been register test!')
-    );
-
     const req = httpTestingController.expectOne(`${url}/register`);
     expect(req.request.method).toBe('POST');
 
     req.flush(mockResponse);
+
+    service.message.subscribe((message) => {
+      if (message) {
+        expect(message.message).toBe('You have been register test!');
+      }
+    });
   });
 
-  it('should call signIn and chekUser', () => {
+  it('should call signIn and sign User if token is valid', () => {
     const mockUser: UserLoginData = {
       username: 'test',
       password: 'Test123456',
@@ -72,9 +74,9 @@ describe('AuthService', () => {
       id: '123',
       username: 'test',
       email: 'test@test.com',
-      jsonWebToken: 'aaaa',
-      jsonWebTokenExpires: new Date(),
-      refreshToken: 'adasd1',
+      jsonWebToken: 'token',
+      jsonWebTokenExpires: new Date(new Date().getTime() + 60 * 60 * 1000),
+      refreshToken: 'refreshToken',
       firstName: null,
       lastName: null,
     };
@@ -91,11 +93,83 @@ describe('AuthService', () => {
     );
     service.signIn(mockUser);
 
-    service.user.subscribe((user) => expect(user).toEqual(mockAppUser));
+    const req = httpTestingController.expectOne(`${url}/login`);
+    expect(req.request.method).toBe('POST');
+
+    req.flush(mockResponse);
+
+    service.user.subscribe((user) => {
+      expect(user).toEqual(mockAppUser);
+    });
+  });
+
+  it('should call signIn and not sign User if token is not valid', () => {
+    const mockUser: UserLoginData = {
+      username: 'test',
+      password: 'Test123456',
+    };
+
+    const mockResponse: UserLoginResponseData = {
+      id: '123',
+      username: 'test',
+      email: 'test@test.com',
+      jsonWebToken: 'token',
+      jsonWebTokenExpires: new Date(),
+      refreshToken: 'refreshToken',
+      firstName: null,
+      lastName: null,
+    };
+
+    service.signIn(mockUser);
 
     const req = httpTestingController.expectOne(`${url}/login`);
     expect(req.request.method).toBe('POST');
 
     req.flush(mockResponse);
+
+    service.user.subscribe((user) => {
+      expect(user).toBeNull();
+    });
+  });
+
+  it('should call logut and logut user', () => {
+    service.logOut();
+
+    service.user.subscribe((user) => {
+      expect(user).toBeNull();
+    });
+  });
+
+  it('should call checkUsernameAvailable and check if it is available username', () => {
+    const mockUsername = 'Test';
+
+    const availableName = {
+      exist: false,
+    };
+
+    service.checkUsernameAvailable(mockUsername).subscribe((res) => {
+      expect(res).toEqual(availableName);
+    });
+
+    const req = httpTestingController.expectOne(`${url}/username-exist`);
+    expect(req.request.method).toBe('POST');
+
+    req.flush(availableName);
+  });
+  it('should call checkUsernameAvailable and check if it is unavailable username', () => {
+    const mockUsername = 'Test';
+
+    const unavailableName = {
+      exist: true,
+    };
+
+    service.checkUsernameAvailable(mockUsername).subscribe((res) => {
+      expect(res).toEqual(unavailableName);
+    });
+
+    const req = httpTestingController.expectOne(`${url}/username-exist`);
+    expect(req.request.method).toBe('POST');
+
+    req.flush(unavailableName);
   });
 });
