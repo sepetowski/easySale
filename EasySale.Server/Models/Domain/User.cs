@@ -13,6 +13,8 @@
 
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenExpires { get; set; }
+
+        public string? ProfileImagePath { get; set; }
       
        
     }
