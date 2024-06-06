@@ -14,29 +14,29 @@ export const NAV_ITEMS: NavItem[] = [
   },
   {
     name: 'Saved',
-    href: '/',
+    href: '/saved',
     icon: 'pi-heart',
   },
   {
     name: 'Messages',
-    href: '/',
+    href: '/messages',
     icon: 'pi-comments',
     aditionalInfomration: true,
     aditionalInfomrationNumber: 3,
   },
   {
     name: 'Wallet',
-    href: '/',
+    href: '/wallet',
     icon: 'pi-wallet',
   },
   {
     name: 'Buying',
-    href: '/',
+    href: '/buying',
     icon: 'pi-shopping-bag',
   },
   {
     name: 'Selling',
-    href: '/',
+    href: '/selling',
     icon: 'pi-dollar',
   },
   {
