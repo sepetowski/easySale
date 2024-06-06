@@ -9,23 +9,16 @@
             <p>search</p>
         </div>
         <p-button icon="pi pi-bars" size="small" (click)="toggleSidebar()" />
-
     </div>
-
-
 </nav>
 
-
-<p-sidebar transitionOptions="300ms cubic-bezier(0, 0, 0.2, 1)" #sidebarRef [(visible)]="sidebarVisible"
-    position="right">
+<p-sidebar transitionOptions="300ms cubic-bezier(0, 0, 0.2, 1)" [(visible)]="sidebarVisible" position="right">
     <ng-template pTemplate="headless">
         <div class="w-full flex flex-col h-full p-4 gap-4">
             <div class="w-full flex items-center justify-between flex-shrink-0">
-
                 <h2 class="text-teal-400 text-2xl">
                     Esay<span class="font-bold">Sale</span>
                 </h2>
-
                 <span>
                     <p-button type="button" (click)="toggleSidebar()" icon="pi pi-times" [rounded]="true"
                         [text]="true"></p-button>
@@ -72,6 +65,5 @@
                 </a>
             </div>
         </div>
-
     </ng-template>
 </p-sidebar>

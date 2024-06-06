@@ -1,6 +1,6 @@
-import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { AuthService } from '../../../core/services/auth/auth.service';
-import { Sidebar, SidebarModule } from 'primeng/sidebar';
+import { SidebarModule } from 'primeng/sidebar';
 import { ButtonModule } from 'primeng/button';
 import { AvatarModule } from 'primeng/avatar';
 import { StyleClassModule } from 'primeng/styleclass';
@@ -26,7 +26,6 @@ import { Subscription } from 'rxjs';
   templateUrl: './nav.component.html',
 })
 export class NavComponent implements OnInit, OnDestroy {
-  @ViewChild('sidebarRef') sidebarRef!: Sidebar;
   private authService = inject(AuthService);
 
   private userSub: Subscription | null = null;
