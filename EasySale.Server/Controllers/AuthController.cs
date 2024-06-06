@@ -58,14 +58,14 @@ namespace EasySale.Server.Controllers
 
         }
 
-        [HttpPost("username-exist")]
+        [HttpPost("usernameExist")]
         public async Task<IActionResult> CheckUsernameExist([FromBody] CheckUsernameRequestDTO checkUsernameRequestDTO)
         {
 
             var exist = await _authRepository.CheckUsernameExistAsync(checkUsernameRequestDTO);
             return Ok(exist);
         }
-        [HttpPost("refresh-token")]
+        [HttpPost("refreshToken")]
         public async Task<IActionResult> GenerateRefreshToken([FromBody] RefreshTokenRequestDTO refreshTokenDTO)
         {
             var res= await _authRepository.GenerateRefreshTokenAsync(refreshTokenDTO);

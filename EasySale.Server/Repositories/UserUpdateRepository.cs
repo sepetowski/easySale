@@ -1,7 +1,6 @@
 ﻿using EasySale.Server.Data;
 using EasySale.Server.Interfaces;
 using EasySale.Server.Models.DTO.UserUpdates;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -13,11 +12,49 @@ namespace EasySale.Server.Repositories
         private readonly DataContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IHttpContextAccessor _contextAccessor;
-        public UserUpdateRepository(DataContext context, IWebHostEnvironment webHostEnvironment, IHttpContextAccessor httpContextAccessor   )
+      
+        public UserUpdateRepository(DataContext context, IWebHostEnvironment webHostEnvironment, IHttpContextAccessor httpContextAccessor )
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
             _contextAccessor = httpContextAccessor;
+           
+        }
+
+
+        public async Task<UpdateUserDetailsResponseDTO> UpdateUserDetailsAsync(UpdateUserDetailsRequestDTO requestDTO)
+        {
+            var parsed = Guid.TryParse(requestDTO.Id, out var id);
+
+            if (!parsed)
+                throw new Exception("User not found");
+
+            var userExist = await _context.Users.FirstOrDefaultAsync((user) => user.Id == id);
+
+            if (userExist == null)
+                throw new Exception("User not found");
+
+            var usernameExist = await _context.Users.FirstOrDefaultAsync((user) => user.Username == requestDTO.Username);
+
+            if (usernameExist !=null)
+                throw new Exception("This username is taken");
+
+
+            userExist.FirstName=requestDTO.FirstName;
+            userExist.LastName=requestDTO.LastName;
+           userExist.Username=requestDTO.Username;
+
+            await _context.SaveChangesAsync();
+
+            var updatedUser = new UpdateUserDetailsResponseDTO() 
+            {   Username = userExist.Username,
+                FirstName=userExist.FirstName,
+                LastName=userExist.LastName 
+            };   
+
+            return updatedUser;
+          
+
         }
 
         public async Task<UpdateProfileImageResponseDTO>  UpdateProfileImageAsync(UpdateProfileImageRequestDTO request)
@@ -125,6 +162,8 @@ namespace EasySale.Server.Repositories
 
             return "";
         }
+
+      
     }
 
 

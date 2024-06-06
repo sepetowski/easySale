@@ -19,7 +19,7 @@ namespace EasySale.Server.Controllers
             _userUpdateRepository = userUpdateRepository;
         }
 
-        [HttpPost("update-image")]
+        [HttpPost("updateImage")]
         public async Task<IActionResult> UpdatePorifleImage([FromForm] UpdateProfileImageRequestDTO updateProfileImageRequestDTO)
         {
             try
@@ -32,7 +32,7 @@ namespace EasySale.Server.Controllers
             }
         }
 
-        [HttpPost("delete-image")]
+        [HttpPost("deleteImage")]
         public async Task<IActionResult> DeletePorifleImage([FromBody] DeleteProfileImageRequestDTO deleteProfileImageRequestDTO)
         {
             var res =await _userUpdateRepository.DeleteProfileImageAsync(deleteProfileImageRequestDTO);
@@ -40,6 +40,20 @@ namespace EasySale.Server.Controllers
                 return BadRequest(res);
 
             return Ok(res);
+        }
+
+        [HttpPost("updateDetails")]
+        public async Task<IActionResult> UpdateUserDetails([FromBody] UpdateUserDetailsRequestDTO updateUserDetailsRequest)
+        {
+            try
+            {
+                var res = await _userUpdateRepository.UpdateUserDetailsAsync(updateUserDetailsRequest);
+                return Ok(res);
+
+            }catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
 

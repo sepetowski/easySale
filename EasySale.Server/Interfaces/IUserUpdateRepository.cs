@@ -7,6 +7,7 @@ namespace EasySale.Server.Interfaces
     {
 
         Task<UpdateProfileImageResponseDTO> UpdateProfileImageAsync(UpdateProfileImageRequestDTO requestDTO);
-        Task<DeleteProfileImageResponseDTO> DeleteProfileImageAsync(DeleteProfileImageRequestDTO deleteProfileImageRequestDTO);
+        Task<DeleteProfileImageResponseDTO> DeleteProfileImageAsync(DeleteProfileImageRequestDTO requestDTO);
+        Task<UpdateUserDetailsResponseDTO> UpdateUserDetailsAsync(UpdateUserDetailsRequestDTO requestDTO);
     }
 }
