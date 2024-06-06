@@ -24,13 +24,24 @@ namespace EasySale.Server.Controllers
         {
             try
             {
-              var res= await _userUpdateRepository.UpdateProfileImageAsync(updateProfileImageRequestDTO);
-              return Ok(res);
-            }catch (Exception ex)
+                var res = await _userUpdateRepository.UpdateProfileImageAsync(updateProfileImageRequestDTO);
+                return Ok(res);
+            } catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("delete-image")]
+        public async Task<IActionResult> DeletePorifleImage([FromBody] DeleteProfileImageRequestDTO deleteProfileImageRequestDTO)
+        {
+            var res =await _userUpdateRepository.DeleteProfileImageAsync(deleteProfileImageRequestDTO);
+            if (!res.Success)
+                return BadRequest(res);
+
+            return Ok(res);
+        }
+
 
     }
 }

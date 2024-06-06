@@ -22,12 +22,16 @@ namespace EasySale.Server.Repositories
 
         public async Task<UpdateProfileImageResponseDTO>  UpdateProfileImageAsync(UpdateProfileImageRequestDTO request)
         {
-            var id = new Guid(request.UserId);
+            var parsed = Guid.TryParse(request.UserId, out var id);
+
+            if (!parsed)
+                throw new Exception("User not found");
+
             var userExist = await _context.Users.FirstOrDefaultAsync((user) => user.Id == id);
 
             if (userExist == null)
                 throw new Exception("User not found");  
-
+                
             string isNotValidInfo= ValidateFileUpload(request);
             if (isNotValidInfo.Length > 0)
                 throw new Exception(isNotValidInfo);
@@ -43,11 +47,10 @@ namespace EasySale.Server.Repositories
                 Directory.CreateDirectory(userDirectory);
             }
 
-            var existingFiles = Directory.GetFiles(userDirectory, $"{id}.*");
-            foreach (var file in existingFiles)
-            {
-                File.Delete(file);
-            }
+            var deleted= DeleteProfileImage(id);
+
+            if(!deleted)
+                throw new Exception("Can not delete old image. Please try again");
 
             using var stream = new FileStream(localPath, FileMode.Create, FileAccess.Write);
             await request.ImageFile.CopyToAsync(stream);
@@ -59,9 +62,55 @@ namespace EasySale.Server.Repositories
 
             await _context.SaveChangesAsync();
 
-            return new UpdateProfileImageResponseDTO() { ImageFile = urlFilePath };
+            return new UpdateProfileImageResponseDTO() { profileImageUrl = urlFilePath };
         }
 
+        public async Task<DeleteProfileImageResponseDTO> DeleteProfileImageAsync(DeleteProfileImageRequestDTO deleteProfileImageRequestDTO)
+        {
+
+
+            var parsed=Guid.TryParse(deleteProfileImageRequestDTO.UserId, out var id);
+
+            if(!parsed)
+                return new DeleteProfileImageResponseDTO { Success = false, message = "User not found" };
+
+            var userExist = await _context.Users.FirstOrDefaultAsync((user) => user.Id == id);
+
+            if (userExist == null)
+                return new DeleteProfileImageResponseDTO { Success = false, message="User not found" };
+
+            if (userExist.ProfileImagePath == null)
+                return new DeleteProfileImageResponseDTO { Success = false ,message="No image to delete" };
+
+            var deleted=DeleteProfileImage(id);
+
+            if(!deleted) 
+                return new DeleteProfileImageResponseDTO { Success = false , message= "Can not delete old image. Please try again" };
+
+            userExist.ProfileImagePath = null;
+            await _context.SaveChangesAsync();
+
+            return new DeleteProfileImageResponseDTO { Success=true , message="Image has been deleted"};
+        }
+
+
+        private bool DeleteProfileImage(Guid id)
+        {
+
+            string userDirectory = Path.Combine(_webHostEnvironment.ContentRootPath, "Images", "UsersProfiles");
+
+            var existingFiles = Directory.GetFiles(userDirectory, $"{id}.*");
+            foreach (var file in existingFiles)
+            {
+                File.Delete(file);
+            }
+
+            var leftFiles = Directory.GetFiles(userDirectory, $"{id}.*");
+            if (leftFiles.Length == 0)
+                return true;
+
+            return false;
+        }
 
         private string ValidateFileUpload(UpdateProfileImageRequestDTO request)
         {

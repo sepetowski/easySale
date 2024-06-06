@@ -71,6 +71,7 @@ namespace EasySale.Server.Repositories
                 Username = userExist.Username,
                 FirstName=userExist.FirstName,
                 LastName = userExist.LastName,
+                profileImageUrl = userExist.ProfileImagePath,
                 JSONWebToken = token,
                 JSONWebTokenExpires = tokenExpires,
                 RefreshToken=refreshToken,
