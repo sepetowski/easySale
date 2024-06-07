@@ -4,7 +4,7 @@ namespace EasySale.Server.Models.DTO.UserUpdates
 {
     public class UpdateProfileImageResponseDTO
     {
-        public required string profileImageUrl { get; set; }
+        public required string ProfileImageUrl { get; set; }
         
     }
 }

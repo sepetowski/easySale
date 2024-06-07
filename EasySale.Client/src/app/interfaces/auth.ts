@@ -7,6 +7,8 @@ export interface JsonUser {
   _tokenExpirationDate: string;
   _username: string;
   _refreshToken: string;
+  _refreshTokenExpires: Date;
+  _profileImageUrl: string | null;
 }
 
 export interface UserRegisterResponseData {
@@ -24,6 +26,8 @@ export interface UserLoginResponseData {
   jsonWebToken: string;
   jsonWebTokenExpires: Date;
   refreshToken: string;
+  refreshTokenExpires: Date;
+  profileImageUrl: string | null;
 }
 
 export interface UserLoginData {
@@ -42,6 +46,7 @@ export interface RefreshTokenRes {
   token: string;
   refreshToken: string;
   tokenExpires: string;
+  refreshTokenExpires: Date;
 }
 export interface RefreshTokenReq {
   token: string;

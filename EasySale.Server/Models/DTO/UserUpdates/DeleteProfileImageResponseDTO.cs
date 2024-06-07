@@ -3,6 +3,6 @@
     public class DeleteProfileImageResponseDTO
     {
         public required bool Success { get; set; }
-        public required string message { get; set; }
+        public required string Message { get; set; }
     }
 }

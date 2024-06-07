@@ -7,7 +7,9 @@ export class User {
     private _email: string,
     private _token: string,
     private _tokenExpirationDate: Date | null,
-    private _refreshToken: string
+    private _refreshToken: string,
+    private _refreshTokenExpires: Date,
+    private _profileImageUrl: string | null
   ) {}
 
   get id() {
@@ -36,5 +38,13 @@ export class User {
 
   get tokenExpirationDate() {
     return this._tokenExpirationDate;
+  }
+
+  get refreshTokenExpires() {
+    return this._refreshTokenExpires;
+  }
+
+  get profileImageUrl() {
+    return this._profileImageUrl;
   }
 }

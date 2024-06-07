@@ -59,8 +59,12 @@ namespace EasySale.Server.Repositories
 
             string refreshToken = CreateRandomToken();
 
+            var refresTokenExpires= DateTime.Now.AddDays(1);
+
             userExist.RefreshToken = refreshToken;
-            userExist.RefreshTokenExpires = DateTime.Now.AddDays(1);
+            userExist.RefreshTokenExpires = refresTokenExpires;
+
+            
 
             await _context.SaveChangesAsync();
 
@@ -71,11 +75,12 @@ namespace EasySale.Server.Repositories
                 Username = userExist.Username,
                 FirstName=userExist.FirstName,
                 LastName = userExist.LastName,
-                profileImageUrl = userExist.ProfileImagePath,
+                ProfileImageUrl = userExist.ProfileImagePath,
                 JSONWebToken = token,
                 JSONWebTokenExpires = tokenExpires,
                 RefreshToken=refreshToken,
-                
+                RefreshTokenExpires= refresTokenExpires
+
             };
 
             return newUserResponse;
@@ -156,8 +161,11 @@ namespace EasySale.Server.Repositories
             string token = GenerateJwtToken(tokenExpires, user.Username, user.Email);
 
             string refreshToken = CreateRandomToken();
+
+            var refresTokenExpires = DateTime.Now.AddDays(1);
+
             user.RefreshToken = refreshToken;
-            user.RefreshTokenExpires = DateTime.Now.AddDays(1);
+            user.RefreshTokenExpires = refresTokenExpires;
 
             await _context.SaveChangesAsync();
 
@@ -165,7 +173,9 @@ namespace EasySale.Server.Repositories
             {
                 Token=token,
                 RefreshToken = refreshToken,
-                TokenExpires=tokenExpires
+                TokenExpires=tokenExpires,
+                RefreshTokenExpires=refresTokenExpires
+                
 
             };
 

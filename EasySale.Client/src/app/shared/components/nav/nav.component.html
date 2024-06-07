@@ -56,7 +56,11 @@
                 <a (click)="toggleSidebar()" routerLink="/settings"
                     class="flex items-center cursor-pointer p-3 rounded-md hover:bg-surface/50 transition-colors duration-300 justify-between">
                     <div class="flex items-center gap-2 w-full">
-                        <p-avatar shape="circle" icon="pi pi-user" />
+                        @if (user && user.profileImageUrl) {
+                        <p-avatar size="large" shape="circle" [image]="user.profileImageUrl" />
+                        }@else {
+                        <p-avatar size="large" shape="circle" icon="pi pi-user" />
+                        }
                         <div class="space-x-0.5">
                             <p>{{user?.username}}</p>
                             <p class="text-xs text-neutral-400">{{user?.email}}</p>

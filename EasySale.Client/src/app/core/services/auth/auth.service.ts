@@ -67,17 +67,31 @@ export class AuthService {
       user._email,
       user._token,
       new Date(user._tokenExpirationDate),
-      user._refreshToken
+      user._refreshToken,
+      new Date(user._refreshTokenExpires),
+      user._profileImageUrl
     );
-
-    this._user.next(loggedUser);
 
     const expirationDuration =
       loggedUser.tokenExpirationDate!.getTime() - new Date().getTime();
 
-    if (expirationDuration > 0)
+    const refreshTokenExpired =
+      loggedUser.refreshTokenExpires.getTime() - new Date().getTime() > 0
+        ? false
+        : true;
+
+    if (expirationDuration > 0) {
+      this._user.next(loggedUser);
       this.startTokenExpirationCountdown(expirationDuration);
-    else this.refreshToken();
+    } else {
+      if (refreshTokenExpired) {
+        this.logOut();
+        return;
+      }
+
+      this._user.next(loggedUser);
+      this.refreshToken();
+    }
   }
 
   public logOut() {
@@ -109,7 +123,7 @@ export class AuthService {
 
   public checkUsernameAvailable(username: string) {
     return this._http.post<{ exist: boolean }>(
-      'https://localhost:7198/api/auth/username-exist',
+      'https://localhost:7198/api/auth/usernameExist',
       { username }
     );
   }
@@ -138,7 +152,9 @@ export class AuthService {
       authData.email,
       authData.jsonWebToken,
       new Date(authData.jsonWebTokenExpires),
-      authData.refreshToken
+      authData.refreshToken,
+      new Date(authData.refreshTokenExpires),
+      authData.profileImageUrl
     );
 
     const expirationDuration =
@@ -184,7 +200,7 @@ export class AuthService {
 
     this._http
       .post<RefreshTokenRes>(
-        'https://localhost:7198/api/auth/refresh-token',
+        'https://localhost:7198/api/auth/refreshToken',
         refreshTokenReq
       )
       .subscribe({
@@ -205,7 +221,9 @@ export class AuthService {
         user.email,
         refreshTokenRes.token,
         new Date(refreshTokenRes.tokenExpires),
-        refreshTokenRes.refreshToken
+        refreshTokenRes.refreshToken,
+        new Date(refreshTokenRes.refreshTokenExpires),
+        user.profileImageUrl
       );
 
       const expirationDuration =

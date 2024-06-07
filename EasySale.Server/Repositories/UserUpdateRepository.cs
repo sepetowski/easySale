@@ -99,7 +99,7 @@ namespace EasySale.Server.Repositories
 
             await _context.SaveChangesAsync();
 
-            return new UpdateProfileImageResponseDTO() { profileImageUrl = urlFilePath };
+            return new UpdateProfileImageResponseDTO() { ProfileImageUrl = urlFilePath };
         }
 
         public async Task<DeleteProfileImageResponseDTO> DeleteProfileImageAsync(DeleteProfileImageRequestDTO deleteProfileImageRequestDTO)
@@ -109,25 +109,25 @@ namespace EasySale.Server.Repositories
             var parsed=Guid.TryParse(deleteProfileImageRequestDTO.UserId, out var id);
 
             if(!parsed)
-                return new DeleteProfileImageResponseDTO { Success = false, message = "User not found" };
+                return new DeleteProfileImageResponseDTO { Success = false, Message = "User not found" };
 
             var userExist = await _context.Users.FirstOrDefaultAsync((user) => user.Id == id);
 
             if (userExist == null)
-                return new DeleteProfileImageResponseDTO { Success = false, message="User not found" };
+                return new DeleteProfileImageResponseDTO { Success = false, Message="User not found" };
 
             if (userExist.ProfileImagePath == null)
-                return new DeleteProfileImageResponseDTO { Success = false ,message="No image to delete" };
+                return new DeleteProfileImageResponseDTO { Success = false ,Message="No image to delete" };
 
             var deleted=DeleteProfileImage(id);
 
             if(!deleted) 
-                return new DeleteProfileImageResponseDTO { Success = false , message= "Can not delete old image. Please try again" };
+                return new DeleteProfileImageResponseDTO { Success = false , Message= "Can not delete old image. Please try again" };
 
             userExist.ProfileImagePath = null;
             await _context.SaveChangesAsync();
 
-            return new DeleteProfileImageResponseDTO { Success=true , message="Image has been deleted"};
+            return new DeleteProfileImageResponseDTO { Success=true , Message="Image has been deleted"};
         }
 
 

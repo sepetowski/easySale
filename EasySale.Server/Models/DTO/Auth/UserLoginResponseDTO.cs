@@ -10,6 +10,7 @@
         public required string JSONWebToken { get; set; }
         public required DateTime JSONWebTokenExpires { get; set; }
         public required string RefreshToken { get; set; }
-        public string? profileImageUrl { get; set; }
+        public required DateTime RefreshTokenExpires { get; set; }
+        public string? ProfileImageUrl { get; set; }
     }
 }
